@@ -1,7 +1,38 @@
 #!/usr/bin/env groovy
+
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* Import/Export utility for ZooKeeper.
+ * @author <a href="mailto:alfredo.diaz@therore.net">Alfredo Diaz</a>
+ * @see https://github.com/alfredodiaz/therore-zookeeperdump
+ */
+
+@Grab("org.yaml:snakeyaml:1.13")
+@Grab("org.apache.curator:curator-recipes:2.7.1")
+@Grab("org.slf4j:slf4j-log4j12:1.7.11")
+@Grab("org.springframework:spring-context:4.1.6.RELEASE")
+@Grab("org.springframework.boot:spring-boot-autoconfigure:1.2.2.RELEASE")
+@Grab("com.fasterxml.jackson.core:jackson-databind:2.4.0")
+@Grab("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.4.0")
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import org.apache.commons.cli.HelpFormatter
 import org.apache.curator.framework.AuthInfo
 import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.ExponentialBackoffRetry
@@ -12,20 +43,13 @@ import org.springframework.beans.MutablePropertyValues
 import org.springframework.boot.bind.RelaxedDataBinder
 import org.yaml.snakeyaml.Yaml
 
-@Grab("org.yaml:snakeyaml:1.13")
-@Grab("org.apache.curator:curator-recipes:2.7.1")
-@Grab("org.slf4j:slf4j-api:1.7.6")
-@Grab("org.slf4j:slf4j-log4j12:1.7.11")
-@Grab("org.springframework:spring-context:4.1.6.RELEASE")
-@Grab("org.springframework.boot:spring-boot-autoconfigure:1.2.2.RELEASE")
-@Grab("com.fasterxml.jackson.core:jackson-databind:2.4.0")
-@Grab("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.4.0")
-
 def cli = new CliBuilder(width: 180, usage: '''
 zookeeperdump.groovy [-s {ip:port}] [-x | -c] [-u scheme:id] [-a {scheme:id:perm,scheme:id:perm...}] zpath
 examples:
 zookeeperdump.groovy -x /config/application > dump.yml
 zookeeperdump.groovy -c /config/application < dump.yml
+zookeeperdump.groovy -x /config/application/scheduler/timeout
+echo 1000 | zookeeperdump.groovy -c /config/application/scheduler/timeout
 zookeeperdump.groovy -u digest:usr:pwd -a digest:usr:uPIxv8DxE/mT5RPGVrsDMJnQoTQ=:rw -c /config/application < dump.yml
 zookeeperdump.groovy -u digest:usr:pwd -a digest:usr:uPIxv8DxE/mT5RPGVrsDMJnQoTQ=:r -c /config/application < dump.yml
 zookeeperdump.groovy -u digest:super:secret  -c /config/myapplication < dump.yml
@@ -50,10 +74,6 @@ def auth = opt.u ? opt.u.split(",").collect{it.split(":")}.collect{new AuthInfo(
 def acls = opt.a ? opt.a.split(",").collect{it.split(":")}
         .collect{new ACL(it[-1].chars.collect{1<<"rwcda".indexOf(it as String)}
         .inject(0){r,i->r|i},new Id(it[0],it[1..-2].join(':')))} : null
-
-
-println "acls = $acls"
-
 
 def curatorBuilder = CuratorFrameworkFactory.builder()
             .connectionTimeoutMs(1000)
