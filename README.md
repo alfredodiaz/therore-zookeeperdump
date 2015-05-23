@@ -1,7 +1,7 @@
 # zookeeperdump
 Utility script for import/export _ztrees_ to/from a [ZooKeeper Server](https://zookeeper.apache.org/). 
 
-This tool uses [Yaml](http://www.yaml.org/start.html) format and is intended to help to load configurations for [Spring Cloud Config ZooKeeper](https://github.com/spring-cloud/spring-cloud-zookeeper).
+This tool uses [Yaml](http://www.yaml.org/start.html) format and is intended to help loading configurations for [Spring Cloud Config ZooKeeper](https://github.com/spring-cloud/spring-cloud-zookeeper).
 
 ### Downloading the script
 ```
@@ -9,7 +9,7 @@ mvn -Dartifact=net.therore.zookeeperdump:therore-zookeeperdump:1.1.0:groovy -q -
 ```
 
 ### Help command
-Executing _zookeeperdump.groovy_ without parameters it will print the help
+To print the help message execute _zookeeperdump.groovy_ without parameters.
 ```
 usage: zookeeperdump.groovy [-s {ip:port}] [-x | -c] [-u scheme:id] [-a {scheme:id:perm,scheme:id:perm...}] zpath
  -a,--acls <arg>     set acls used for creation
@@ -29,7 +29,7 @@ examples:
 ```
 
 ### Import Yaml into ZooKeeper
-For example to import this yaml file into the path _/config/application_
+This is an example of a yaml file to import
 ###### dump.yml (example)
 ```
 ---
@@ -53,6 +53,7 @@ organizations:
 ```
 
 ###### command
+We could import that _yaml_ file using this command
 ```
 zookeeperdump.groovy -c /config/application < dump.yml
 ```
@@ -60,6 +61,7 @@ zookeeperdump.groovy -c /config/application < dump.yml
 ### Export Yaml from ZooKeeper
 
 ###### command
+We could use this similar command for exporting.
 ```
 zookeeperdump.groovy -x /config/application > dump.yml
 ```
