@@ -45,15 +45,16 @@ import org.yaml.snakeyaml.Yaml
 
 def cli = new CliBuilder(width: 180, usage: '''
 zookeeperdump.groovy [-s {ip:port}] [-x | -c] [-u scheme:id] [-a {scheme:id:perm,scheme:id:perm...}] zpath
+'''.trim(), footer:'''
 examples:
-zookeeperdump.groovy -x /config/application > dump.yml
-zookeeperdump.groovy -c /config/application < dump.yml
-zookeeperdump.groovy -x /config/application/scheduler/timeout
-echo 1000 | zookeeperdump.groovy -c /config/application/scheduler/timeout
-zookeeperdump.groovy -u digest:usr:pwd -a digest:usr:uPIxv8DxE/mT5RPGVrsDMJnQoTQ=:rw -c /config/application < dump.yml
-zookeeperdump.groovy -u digest:usr:pwd -a digest:usr:uPIxv8DxE/mT5RPGVrsDMJnQoTQ=:r -c /config/application < dump.yml
-zookeeperdump.groovy -u digest:super:secret  -c /config/myapplication < dump.yml
-zookeeperdump.groovy -u digest:super:secret  -x /config/myapplication > dump.yml
+> zookeeperdump.groovy -x /config/application > dump.yml
+> zookeeperdump.groovy -c /config/application < dump.yml
+> zookeeperdump.groovy -x /config/application/scheduler/timeout
+> echo 1000 | zookeeperdump.groovy -c /config/application/scheduler/timeout
+> zookeeperdump.groovy -u digest:usr:pwd -a digest:usr:uPIxv8DxE/mT5RPGVrsDMJnQoTQ=:rw -c /config/application < dump.yml
+> zookeeperdump.groovy -u digest:usr:pwd -a digest:usr:uPIxv8DxE/mT5RPGVrsDMJnQoTQ=:r -c /config/application < dump.yml
+> zookeeperdump.groovy -u digest:super:secret  -c /config/myapplication < dump.yml
+> zookeeperdump.groovy -u digest:super:secret  -x /config/myapplication > dump.yml
 '''.trim())
 cli.s(longOpt:'server', 'zookeeper server connection. By default localhost:2181', required:false, args:1)
 cli.x(longOpt:'extract', 'extract tree in yaml format to stdout', required:false, args:0)
