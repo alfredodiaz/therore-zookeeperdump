@@ -5,7 +5,7 @@ This tool uses [Yaml](http://www.yaml.org/start.html) format and is intended to 
 
 ### Downloading the script
 ```
-mvn -Dartifact=net.therore.zookeeperdump:therore-zookeeperdump:1.1.0:groovy -q -Ddest=zookeeperdump.groovy dependency:get
+mvn -Dartifact=net.therore.zookeeperdump:therore-zookeeperdump:LATEST:groovy -q -Ddest=zookeeperdump.groovy dependency:get
 ```
 
 ### Help command
