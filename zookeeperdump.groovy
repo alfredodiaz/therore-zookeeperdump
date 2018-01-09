@@ -26,8 +26,6 @@
 @Grab("org.yaml:snakeyaml:1.13")
 @Grab("org.apache.curator:curator-recipes:2.7.1")
 @Grab("org.slf4j:slf4j-log4j12:1.7.11")
-@Grab("org.springframework:spring-context:4.1.6.RELEASE")
-@Grab("org.springframework.boot:spring-boot-autoconfigure:1.2.2.RELEASE")
 @Grab("com.fasterxml.jackson.core:jackson-databind:2.4.0")
 @Grab("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.4.0")
 
@@ -39,8 +37,6 @@ import org.apache.curator.retry.ExponentialBackoffRetry
 import org.apache.zookeeper.KeeperException
 import org.apache.zookeeper.data.ACL
 import org.apache.zookeeper.data.Id
-import org.springframework.beans.MutablePropertyValues
-import org.springframework.boot.bind.RelaxedDataBinder
 import org.yaml.snakeyaml.Yaml
 
 def cli = new CliBuilder(width: 180, usage: '''
@@ -104,12 +100,7 @@ if (opt.x) {
 
 /// IMPORT TREE FROM YAML
 if (opt.c) {
-    map = [:]
-    yaml = new Yaml().load(System.in)
-    if (yaml instanceof Map)
-        new RelaxedDataBinder(map).bind(new MutablePropertyValues(yaml))
-    else
-        map = yaml;
+    map = new Yaml().load(new BufferedReader(new InputStreamReader(System.in))) as Map;
 
     rootZPath = rootZPath.startsWith('/')? rootZPath : "/$rootZPath"
 
